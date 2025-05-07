@@ -41,7 +41,8 @@ jobs:
         
     - name: Test with pytest
       run: |
-        pytest --cov=app tests/
+        # Modified to point to tests within the app directory
+        pytest --cov=app app/tests/
         
   # Second job - Build and Push Docker Image
   build:
