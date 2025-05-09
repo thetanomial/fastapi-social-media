@@ -1,8 +1,8 @@
 from fastapi import FastAPI, APIRouter,Depends
-from models import Users
+from ..models import Users
 from fastapi.exceptions import HTTPException 
 from pydantic import BaseModel
-from database import SessionLocal
+from ..database import SessionLocal
 from sqlalchemy.orm import Session
 from typing import Annotated
 from passlib.context import CryptContext
@@ -32,6 +32,7 @@ class CreateUserRequest(BaseModel):
     last_name : str 
     password : str 
     role : str 
+    phone_number : str
 
 class Token(BaseModel):
     access_token : str 
@@ -59,10 +60,11 @@ def authenticate_user(username:str,password:str,db):
     
     return user
 
-def create_access_token(username:str,user_id:int,expires_delta:timedelta):
+def create_access_token(username:str,user_id:int, role : str, expires_delta:timedelta):
     encode = {
         'sub':username,
         'id' : user_id,
+        'role' : role,
         
 
     }
@@ -83,6 +85,7 @@ async def get_current_user(token:Annotated[str,Depends(oauth2_bearer)]):
     )
         username : str = payload.get('sub')
         user_id : int = payload.get('id')
+        user_role : str = payload.get('role')
         if username is None or user_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -91,7 +94,8 @@ async def get_current_user(token:Annotated[str,Depends(oauth2_bearer)]):
         
         return {
             'username' : username,
-            'id' : user_id
+            'id' : user_id,
+            'user_role' : user_role
         }
     except:
         raise HTTPException(
@@ -112,7 +116,8 @@ async def create_user(db:db_dependency,create_user_request:CreateUserRequest):
         last_name = create_user_request.last_name, 
         role = create_user_request.role,
         hashed_password = bcrypt_context.hash(create_user_request.password),
-        is_active = True
+        is_active = True,
+        phone_number = create_user_request.phone_number
     )
 
     db.add(create_user_model)
@@ -137,7 +142,7 @@ async def login_for_access_token(form_data:Annotated[
                 detail = "Could not validate user."
             )
     
-    token = create_access_token(user.username,user.id,timedelta(minutes=int(os.getenv("JWT_EXPIRES_IN_MINUTES"))))
+    token = create_access_token(user.username,user.id,user.role,timedelta(minutes=int(os.getenv("JWT_EXPIRES_IN_MINUTES"))))
     
     return {
         'access_token' : token,
