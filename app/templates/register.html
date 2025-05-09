@@ -806,16 +806,170 @@
         });
         
         // Form submission
-        const form = document.getElementById('register-form');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            // You would add your form submission logic here
-            console.log('Form submitted');
-            
-            // Simulating success for demo
-            alert('Registration successful! Welcome to AwesomeBlog!');
-            window.location.href = 'index.html';
+        // Form submission handler
+const form = document.getElementById('register-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Create FormData object from the form
+    const formData = new FormData(this);
+    
+    // Create an object to hold all form data
+    const formDataObject = {};
+    
+    // Process the FormData entries
+    formData.forEach((value, key) => {
+        // Special handling for checkboxes with the same name (like topics[])
+        if (key.includes('[]')) {
+            const cleanKey = key.replace('[]', '');
+            if (!formDataObject[cleanKey]) {
+                formDataObject[cleanKey] = [];
+            }
+            formDataObject[cleanKey].push(value);
+        } else {
+            formDataObject[key] = value;
+        }
+    });
+    
+    // Special handling for file inputs
+    if (formData.get('avatar') && formData.get('avatar').name) {
+        formDataObject.avatar = {
+            name: formData.get('avatar').name,
+            type: formData.get('avatar').type,
+            size: formData.get('avatar').size + ' bytes'
+        };
+    }
+    
+    // Handle checkbox inputs that might not be included if unchecked
+    formDataObject.newsletter = !!document.getElementById('newsletter').checked;
+    formDataObject['comment-notifications'] = !!document.getElementById('comment-notifications').checked;
+    formDataObject['product-updates'] = !!document.getElementById('product-updates').checked;
+    
+    // Add the topics array if not already added
+    if (!formDataObject.topics) {
+        formDataObject.topics = [];
+        const topicCheckboxes = document.querySelectorAll('input[name="topics[]"]:checked');
+        topicCheckboxes.forEach(checkbox => {
+            formDataObject.topics.push(checkbox.value);
         });
+    }
+    
+    // Get data for all steps, even if some fields are in hidden steps
+    const allInputs = form.querySelectorAll('input, select, textarea');
+    allInputs.forEach(input => {
+        if (input.name && !input.name.includes('[]')) {
+            if (input.type === 'checkbox') {
+                formDataObject[input.name] = input.checked;
+            } else if (input.type !== 'file' && input.value) {
+                formDataObject[input.name] = input.value;
+            }
+        }
+    });
+    
+    // Log the complete form data to console
+    console.log('Form Data:', formDataObject);
+    
+    // Format the output nicely for better readability
+    console.table(formDataObject);
+    
+    // For better output of nested objects
+    console.log('Form Data (formatted):', JSON.stringify(formDataObject, null, 2));
+    
+    // You can also show a formatted alert with the data
+    const formattedData = JSON.stringify(formDataObject, null, 2);
+    alert('Form submitted with data:\n\n' + formattedData);
+    
+    // Simulate successful form submission
+    // setTimeout(() => {
+    //     window.location.href = 'login-page.html';
+    // }, 1000);
+});
+
+// Add this to fix the focusable form control error by adding novalidate to the form
+document.addEventListener('DOMContentLoaded', function() {
+    // Add novalidate to prevent browser validation that might cause issues with hidden fields
+    const registerForm = document.getElementById('register-form');
+    registerForm.setAttribute('novalidate', '');
+    
+    // Function to handle required attributes dynamically
+    function updateRequiredAttributes() {
+        const currentStep = document.querySelector('#step-1:not(.hidden), #step-2:not(.hidden), #step-3:not(.hidden)');
+        
+        // Remove required attribute from all inputs in hidden steps
+        document.querySelectorAll('#register-form .hidden input[required], #register-form .hidden select[required], #register-form .hidden textarea[required]')
+            .forEach(input => {
+                input.removeAttribute('required');
+                input.dataset.required = 'true';
+            });
+        
+        // Add required attribute back to visible inputs that need it
+        if (currentStep) {
+            currentStep.querySelectorAll('input[data-required="true"], select[data-required="true"], textarea[data-required="true"]')
+                .forEach(input => {
+                    input.setAttribute('required', '');
+                });
+        }
+    }
+    
+    // Apply initially
+    updateRequiredAttributes();
+    
+    // Update whenever steps change
+    document.getElementById('next-to-step-2').addEventListener('click', updateRequiredAttributes);
+    document.getElementById('back-to-step-1').addEventListener('click', updateRequiredAttributes);
+    document.getElementById('next-to-step-3').addEventListener('click', updateRequiredAttributes);
+    document.getElementById('back-to-step-2').addEventListener('click', updateRequiredAttributes);
+});
+
+// Reset form data when page loads (optional)
+window.addEventListener('load', function() {
+    document.getElementById('register-form').reset();
+});
+
+// Implement a way to collect all form data from any step
+window.collectAllFormData = function() {
+    const form = document.getElementById('register-form');
+    const formData = new FormData(form);
+    const formDataObject = {};
+    
+    // Basic formData processing
+    formData.forEach((value, key) => {
+        if (key.includes('[]')) {
+            const cleanKey = key.replace('[]', '');
+            if (!formDataObject[cleanKey]) {
+                formDataObject[cleanKey] = [];
+            }
+            formDataObject[cleanKey].push(value);
+        } else {
+            formDataObject[key] = value;
+        }
+    });
+    
+    // Handle checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        if (checkbox.name && !checkbox.name.includes('[]')) {
+            formDataObject[checkbox.name] = checkbox.checked;
+        }
+    });
+    
+    // Handle topic checkboxes
+    const topics = [];
+    document.querySelectorAll('input[name="topics[]"]:checked').forEach(checkbox => {
+        topics.push(checkbox.value);
+    });
+    formDataObject.topics = topics;
+    
+    // Log the collected data
+    console.log('Current form data:', formDataObject);
+    return formDataObject;
+};
+
+// Add a global debug function to check form data at any time
+window.debugForm = function() {
+    const data = window.collectAllFormData();
+    console.log('Current form state:', data);
+    alert('Check console for form data');
+};
     </script>
 </body>
 </html>
