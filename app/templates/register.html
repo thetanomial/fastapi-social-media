@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Awesome Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Poppins:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .register-container {
+            min-height: 100vh;
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-input:focus {
+            border-color: #9f7aea;
+            box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.2);
+        }
+        
+        .social-register-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .social-register-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .bg-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23a78bfa' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        /* Step indicators */
+        .step-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .step-connector {
+            position: absolute;
+            top: 15px;
+            height: 2px;
+            z-index: 1;
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            height: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Password strength meter */
+        .password-strength {
+            height: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Animation classes */
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.4s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="register-container flex flex-col lg:flex-row">
+        <!-- Left side - Register Form -->
+        <div class="w-full lg:w-7/12 flex justify-center items-center p-6 md:p-12 bg-white">
+            <div class="w-full max-w-2xl fade-in-up">
+                <!-- Logo & Title -->
+                <div class="mb-6 text-center md:text-left">
+                    <a href="index.html" class="inline-block mb-2">
+                        <h1 class="text-3xl font-bold text-purple-600">Awesome<span class="text-gray-800">Blog</span></h1>
+                    </a>
+                    <h2 class="text-2xl font-semibold text-gray-800">Create Your Account</h2>
+                    <p class="text-gray-500 mt-2">Join our community of writers and readers</p>
+                </div>
+                
+                <!-- Progress Indicator -->
+                <div class="mb-8 relative">
+                    <div class="flex justify-between items-center">
+                        <div class="step-indicator bg-purple-600 text-white">1</div>
+                        <div class="step-indicator bg-gray-200 text-gray-600">2</div>
+                        <div class="step-indicator bg-gray-200 text-gray-600">3</div>
+                    </div>
+                    <div class="step-connector absolute left-0 right-0 bg-gray-200"></div>
+                    <div class="step-connector absolute left-0 bg-purple-600" style="width: 0%;"></div>
+                    <div class="mt-3 flex justify-between text-xs font-medium">
+                        <span class="text-purple-600">Account Info</span>
+                        <span class="text-gray-500">Profile Details</span>
+                        <span class="text-gray-500">Preferences</span>
+                    </div>
+                </div>
+                
+                <!-- Registration Form -->
+                <form id="register-form" class="space-y-5">
+                    <!-- Step 1: Account Info (initially visible) -->
+                    <div id="step-1" class="slide-in">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                    <input id="firstname" name="firstname" type="text" required 
+                                        class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                        placeholder="John">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                    <input id="lastname" name="lastname" type="text" required 
+                                        class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                        placeholder="Doe">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
+                                </div>
+                                <input id="email" name="email" type="email" autocomplete="email" required 
+                                    class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                    placeholder="you@example.com">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Create Password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input id="password" name="password" type="password" required 
+                                    class="form-input block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                    placeholder="••••••••">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <button type="button" id="toggle-password" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Password strength meter -->
+                            <div class="mt-2">
+                                <div class="flex space-x-1">
+                                    <div class="w-1/4 h-1 rounded-full bg-gray-200 password-strength" id="strength-1"></div>
+                                    <div class="w-1/4 h-1 rounded-full bg-gray-200 password-strength" id="strength-2"></div>
+                                    <div class="w-1/4 h-1 rounded-full bg-gray-200 password-strength" id="strength-3"></div>
+                                    <div class="w-1/4 h-1 rounded-full bg-gray-200 password-strength" id="strength-4"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1" id="password-hint">Use 8+ characters with a mix of letters, numbers & symbols</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input id="confirm-password" name="confirm-password" type="password" required 
+                                    class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                    placeholder="••••••••">
+                            </div>
+                            <p id="password-match" class="text-xs invisible mt-1">Passwords must match</p>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input id="terms" name="terms" type="checkbox" required
+                                class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                            <label for="terms" class="ml-2 block text-sm text-gray-700">
+                                I agree to the <a href="#" class="text-purple-600 hover:text-purple-500">Terms of Service</a> and <a href="#" class="text-purple-600 hover:text-purple-500">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <button type="button" id="next-to-step-2" 
+                                class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300">
+                                Continue
+                                <span class="absolute right-4 inset-y-0 flex items-center">
+                                    <i class="fas fa-arrow-right ml-1"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Profile Details (initially hidden) -->
+                    <div id="step-2" class="hidden">
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-at text-gray-400"></i>
+                                </div>
+                                <input id="username" name="username" type="text" required 
+                                    class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                    placeholder="johndoe">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">This will be your unique URL: awesomeblog.com/<span class="text-gray-900">johndoe</span></p>
+                        </div>
+                        
+                        <div>
+                            <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Short Bio</label>
+                            <div class="relative">
+                                <textarea id="bio" name="bio" rows="3" 
+                                    class="form-input block w-full py-3 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                    placeholder="Tell us a little about yourself..."></textarea>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">
+                                <span id="bio-count">0</span>/160 characters
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
+                            <div class="flex items-center space-x-6">
+                                <div class="shrink-0">
+                                    <img id="preview-avatar" class="h-16 w-16 object-cover rounded-full" src="/api/placeholder/200/200" alt="Profile picture preview">
+                                </div>
+                                <label class="block">
+                                    <span class="sr-only">Choose profile photo</span>
+                                    <input type="file" id="avatar" name="avatar" accept="image/*" class="block w-full text-sm text-gray-500
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-medium
+                                        file:bg-purple-50 file:text-purple-600
+                                        hover:file:bg-purple-100">
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-map-marker-alt text-gray-400"></i>
+                                </div>
+                                <input id="location" name="location" type="text" 
+                                    class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                    placeholder="City, Country">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label for="website" class="block text-sm font-medium text-gray-700 mb-1">Website (Optional)</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-globe text-gray-400"></i>
+                                    </div>
+                                    <input id="website" name="website" type="url" 
+                                        class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                        placeholder="https://yourwebsite.com">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="twitter" class="block text-sm font-medium text-gray-700 mb-1">Twitter (Optional)</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fab fa-twitter text-gray-400"></i>
+                                    </div>
+                                    <input id="twitter" name="twitter" type="text" 
+                                        class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" 
+                                        placeholder="@username">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between space-x-4">
+                            <button type="button" id="back-to-step-1" 
+                                class="group relative w-1/2 flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300">
+                                <span class="absolute left-4 inset-y-0 flex items-center">
+                                    <i class="fas fa-arrow-left mr-1"></i>
+                                </span>
+                                Back
+                            </button>
+                            <button type="button" id="next-to-step-3" 
+                                class="group relative w-1/2 flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300">
+                                Continue
+                                <span class="absolute right-4 inset-y-0 flex items-center">
+                                    <i class="fas fa-arrow-right ml-1"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Preferences (initially hidden) -->
+                    <div id="step-3" class="hidden">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Select topics you're interested in</h3>
+                            <p class="text-sm text-gray-500 mb-4">This helps us personalize your feed and suggest content you'll love.</p>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <div class="relative">
+                                    <input type="checkbox" id="topic-tech" name="topics[]" value="technology" class="sr-only peer">
+                                    <label for="topic-tech" class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent peer-checked:bg-purple-50">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900">Technology</div>
+                                            </div>
+                                            <i class="fas fa-check text-purple-600 invisible peer-checked:visible"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="topic-design" name="topics[]" value="design" class="sr-only peer">
+                                    <label for="topic-design" class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent peer-checked:bg-purple-50">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900">Design</div>
+                                            </div>
+                                            <i class="fas fa-check text-purple-600 invisible peer-checked:visible"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="topic-business" name="topics[]" value="business" class="sr-only peer">
+                                    <label for="topic-business" class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent peer-checked:bg-purple-50">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900">Business</div>
+                                            </div>
+                                            <i class="fas fa-check text-purple-600 invisible peer-checked:visible"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="topic-health" name="topics[]" value="health" class="sr-only peer">
+                                    <label for="topic-health" class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent peer-checked:bg-purple-50">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900">Health</div>
+                                            </div>
+                                            <i class="fas fa-check text-purple-600 invisible peer-checked:visible"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="topic-food" name="topics[]" value="food" class="sr-only peer">
+                                    <label for="topic-food" class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent peer-checked:bg-purple-50">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900">Food</div>
+                                            </div>
+                                            <i class="fas fa-check text-purple-600 invisible peer-checked:visible"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="topic-travel" name="topics[]" value="travel" class="sr-only peer">
+                                    <label for="topic-travel" class="flex p-3 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none peer-checked:ring-purple-500 peer-checked:ring-2 peer-checked:border-transparent peer-checked:bg-purple-50">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900">Travel</div>
+                                            </div>
+                                            <i class="fas fa-check text-purple-600 invisible peer-checked:visible"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Notification Preferences</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="newsletter" name="newsletter" type="checkbox" checked
+                                            class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="newsletter" class="font-medium text-gray-700">Weekly Newsletter</label>
+                                        <p class="text-gray-500">Get a weekly digest of the best articles on topics you care about.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="comment-notifications" name="comment-notifications" type="checkbox" checked
+                                            class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="comment-notifications" class="font-medium text-gray-700">Comment Notifications</label>
+                                        <p class="text-gray-500">Get notified when someone comments on your articles.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="product-updates" name="product-updates" type="checkbox" checked
+                                            class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="product-updates" class="font-medium text-gray-700">Product Updates</label>
+                                        <p class="text-gray-500">Receive updates about new features and improvements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between space-x-4 mt-8">
+                            <button type="button" id="back-to-step-2" 
+                                class="group relative w-1/2 flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300">
+                                <span class="absolute left-4 inset-y-0 flex items-center">
+                                    <i class="fas fa-arrow-left mr-1"></i>
+                                </span>
+                                Back
+                            </button>
+                            <button type="submit" 
+                                class="group relative w-1/2 flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300">
+                                Complete Sign Up
+                                <span class="absolute right-4 inset-y-0 flex items-center">
+                                    <i class="fas fa-check ml-1"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Social Login Divider -->
+                <div class="mt-8 relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-200"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-4 bg-white text-gray-500">Or sign up with</span>
+                    </div>
+                </div>
+                
+                <!-- Social Login Buttons -->
+                <div class="mt-6 grid grid-cols-3 gap-3">
+                    <button type="button" 
+                        class="social-register-btn w-full py-3 px-4 rounded-lg border border-gray-300 shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <i class="fab fa-google text-lg"></i>
+                    </button>
+                    <button type="button" 
+                        class="social-register-btn w-full py-3 px-4 rounded-lg border border-gray-300 shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <i class="fab fa-facebook-f text-lg"></i>
+                    </button>
+                    <button type="button" 
+                        class="social-register-btn w-full py-3 px-4 rounded-lg border border-gray-300 shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <i class="fab fa-twitter text-lg"></i>
+                    </button>
+                </div>
+                
+                <!-- Login Link -->
+                <div class="mt-8 text-center">
+                    <p class="text-sm text-gray-600">
+                        Already have an account? 
+                        <a href="login.html" class="font-medium text-purple-600 hover:text-purple-500">
+                            Sign in
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right side - Image/Info Section -->
+        <div class="hidden lg:block lg:w-5/12 bg-pattern">
+            <div class="h-full gradient-bg flex flex-col justify-center items-center p-12">
+                <div class="max-w-lg fade-in-up">
+                    <!-- Main Visual -->
+                    <div class="mb-8">
+                        <img src="/api/placeholder/600/400" alt="Community illustration" class="w-full rounded-lg shadow-xl">
+                    </div>
+                    
+                    <!-- Value Proposition -->
+                    <div class="text-white mb-8">
+                        <h3 class="text-2xl font-bold mb-4">Start Your Writing Journey Today</h3>
+                        <p class="text-purple-100 mb-6">Join thousands of writers and readers who are creating, connecting, and discovering great ideas on AwesomeBlog.</p>
+                    </div>
+                    
+                    <!-- Testimonials -->
+                    <div class="bg-white bg-opacity-10 rounded-xl p-6 mb-8">
+                        <div class="flex items-start mb-4">
+                            <div class="flex-shrink-0">
+                                <img class="h-12 w-12 rounded-full border-2 border-purple-300" src="/api/placeholder/100/100" alt="User avatar">
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-white">
+                                    "AwesomeBlog has transformed my writing career. I've found an audience I never thought possible and connected with like-minded creators."
+                                </p>
+                                <p class="text-xs text-purple-200 mt-2">
+                                    — Michael Chen, Tech Writer
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <img class="h-12 w-12 rounded-full border-2 border-purple-300" src="/api/placeholder/100/100" alt="User avatar">
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-white">
+                                    "I was looking for quality content on design topics, and AwesomeBlog has become my daily source of inspiration and learning."
+                                </p>
+                                <p class="text-xs text-purple-200 mt-2">
+                                    — Sarah Williams, UX Designer
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="bg-white bg-opacity-10 rounded-lg p-4">
+                            <h4 class="text-3xl font-bold text-white">10k+</h4>
+                            <p class="text-xs text-purple-200">Writers</p>
+                        </div>
+                        <div class="bg-white bg-opacity-10 rounded-lg p-4">
+                            <h4 class="text-3xl font-bold text-white">50k+</h4>
+                            <p class="text-xs text-purple-200">Articles</p>
+                        </div>
+                        <div class="bg-white bg-opacity-10 rounded-lg p-4">
+                            <h4 class="text-3xl font-bold text-white">1M+</h4>
+                            <p class="text-xs text-purple-200">Readers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Step navigation
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+        const nextToStep2 = document.getElementById('next-to-step-2');
+        const backToStep1 = document.getElementById('back-to-step-1');
+        const nextToStep3 = document.getElementById('next-to-step-3');
+        const backToStep2 = document.getElementById('back-to-step-2');
+        const stepIndicator = document.querySelectorAll('.step-indicator');
+        const stepConnector = document.querySelector('.step-connector');
+        
+        // Step 1 to Step 2
+        nextToStep2.addEventListener('click', function() {
+            // Simple validation (can be expanded)
+            const firstname = document.getElementById('firstname').value;
+            const lastname = document.getElementById('lastname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const terms = document.getElementById('terms').checked;
+            
+            // Sample validation logic (can be expanded)
+            if (firstname && lastname && email && password && confirmPassword && terms && (password === confirmPassword)) {
+                step1.classList.add('hidden');
+                step2.classList.remove('hidden');
+                step2.classList.add('slide-in');
+                stepIndicator[0].classList.remove('bg-purple-600', 'text-white');
+                stepIndicator[0].classList.add('bg-purple-200', 'text-purple-700');
+                stepIndicator[1].classList.remove('bg-gray-200', 'text-gray-600');
+                stepIndicator[1].classList.add('bg-purple-600', 'text-white');
+                stepConnector.style.width = '50%';
+            } else {
+                // Show error messages
+                alert('Please fill in all required fields and make sure passwords match.');
+            }
+        });
+        
+        // Step 2 back to Step 1
+        backToStep1.addEventListener('click', function() {
+            step2.classList.add('hidden');
+            step1.classList.remove('hidden');
+            step1.classList.add('slide-in');
+            stepIndicator[0].classList.add('bg-purple-600', 'text-white');
+            stepIndicator[0].classList.remove('bg-purple-200', 'text-purple-700');
+            stepIndicator[1].classList.add('bg-gray-200', 'text-gray-600');
+            stepIndicator[1].classList.remove('bg-purple-600', 'text-white');
+            stepConnector.style.width = '0%';
+        });
+        
+        // Step 2 to Step 3
+        nextToStep3.addEventListener('click', function() {
+            // Simple validation for step 2 fields (can be expanded)
+            const username = document.getElementById('username').value;
+            
+            if (username) {
+                step2.classList.add('hidden');
+                step3.classList.remove('hidden');
+                step3.classList.add('slide-in');
+                stepIndicator[1].classList.remove('bg-purple-600', 'text-white');
+                stepIndicator[1].classList.add('bg-purple-200', 'text-purple-700');
+                stepIndicator[2].classList.remove('bg-gray-200', 'text-gray-600');
+                stepIndicator[2].classList.add('bg-purple-600', 'text-white');
+                stepConnector.style.width = '100%';
+            } else {
+                alert('Please provide a username.');
+            }
+        });
+        
+        // Step 3 back to Step 2
+        backToStep2.addEventListener('click', function() {
+            step3.classList.add('hidden');
+            step2.classList.remove('hidden');
+            step2.classList.add('slide-in');
+            stepIndicator[1].classList.add('bg-purple-600', 'text-white');
+            stepIndicator[1].classList.remove('bg-purple-200', 'text-purple-700');
+            stepIndicator[2].classList.add('bg-gray-200', 'text-gray-600');
+            stepIndicator[2].classList.remove('bg-purple-600', 'text-white');
+            stepConnector.style.width = '50%';
+        });
+        
+        // Password visibility toggle
+        const togglePassword = document.getElementById('toggle-password');
+        const password = document.getElementById('password');
+        
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            // Change icon
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+        
+        // Password strength meter
+        const passwordInput = document.getElementById('password');
+        const strengthElements = [
+            document.getElementById('strength-1'),
+            document.getElementById('strength-2'),
+            document.getElementById('strength-3'),
+            document.getElementById('strength-4')
+        ];
+        const passwordHint = document.getElementById('password-hint');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Reset strengths
+            strengthElements.forEach(el => {
+                el.classList.remove('bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500');
+                el.classList.add('bg-gray-200');
+            });
+            
+            if (password.length > 0) {
+                strength += 1;
+            }
+            if (password.length >= 8) {
+                strength += 1;
+            }
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) {
+                strength += 1;
+            }
+            if (/[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password)) {
+                strength += 1;
+            }
+            
+            // Update UI based on strength
+            for (let i = 0; i < strength; i++) {
+                if (strength === 1) {
+                    strengthElements[i].classList.add('bg-red-500');
+                    passwordHint.textContent = "Password is weak";
+                    passwordHint.classList.add('text-red-500');
+                    passwordHint.classList.remove('text-gray-500', 'text-orange-500', 'text-yellow-500', 'text-green-500');
+                } else if (strength === 2) {
+                    strengthElements[i].classList.add('bg-orange-500');
+                    passwordHint.textContent = "Password is fair";
+                    passwordHint.classList.add('text-orange-500');
+                    passwordHint.classList.remove('text-gray-500', 'text-red-500', 'text-yellow-500', 'text-green-500');
+                } else if (strength === 3) {
+                    strengthElements[i].classList.add('bg-yellow-500');
+                    passwordHint.textContent = "Password is good";
+                    passwordHint.classList.add('text-yellow-500');
+                    passwordHint.classList.remove('text-gray-500', 'text-red-500', 'text-orange-500', 'text-green-500');
+                } else if (strength === 4) {
+                    strengthElements[i].classList.add('bg-green-500');
+                    passwordHint.textContent = "Password is strong";
+                    passwordHint.classList.add('text-green-500');
+                    passwordHint.classList.remove('text-gray-500', 'text-red-500', 'text-orange-500', 'text-yellow-500');
+                }
+            }
+            
+            if (password.length === 0) {
+                passwordHint.textContent = "Use 8+ characters with a mix of letters, numbers & symbols";
+                passwordHint.classList.add('text-gray-500');
+                passwordHint.classList.remove('text-red-500', 'text-orange-500', 'text-yellow-500', 'text-green-500');
+            }
+        });
+        
+        // Password match check
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const passwordMatch = document.getElementById('password-match');
+        
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword.length > 0) {
+                passwordMatch.classList.remove('invisible');
+                
+                if (password === confirmPassword) {
+                    passwordMatch.textContent = "Passwords match";
+                    passwordMatch.classList.add('text-green-500');
+                    passwordMatch.classList.remove('text-red-500');
+                } else {
+                    passwordMatch.textContent = "Passwords do not match";
+                    passwordMatch.classList.add('text-red-500');
+                    passwordMatch.classList.remove('text-green-500');
+                }
+            } else {
+                passwordMatch.classList.add('invisible');
+            }
+        });
+        
+        // Bio character count
+        const bioTextarea = document.getElementById('bio');
+        const bioCount = document.getElementById('bio-count');
+        
+        bioTextarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            bioCount.textContent = currentLength;
+            
+            if (currentLength > 160) {
+                bioCount.classList.add('text-red-500');
+                bioCount.classList.remove('text-gray-500');
+                this.value = this.value.substring(0, 160);
+                bioCount.textContent = 160;
+            } else {
+                bioCount.classList.remove('text-red-500');
+                bioCount.classList.add('text-gray-500');
+            }
+        });
+        
+        // Profile picture preview
+        const avatarInput = document.getElementById('avatar');
+        const previewAvatar = document.getElementById('preview-avatar');
+        
+        avatarInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewAvatar.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Form submission
+        const form = document.getElementById('register-form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // You would add your form submission logic here
+            console.log('Form submitted');
+            
+            // Simulating success for demo
+            alert('Registration successful! Welcome to AwesomeBlog!');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

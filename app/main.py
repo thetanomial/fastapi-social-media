@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Depends, Path
+from fastapi import FastAPI, Depends, Path, Request
 from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi.exceptions import HTTPException
+
 
 from .models import Base 
 from .database import engine, SessionLocal 
@@ -9,6 +10,9 @@ from starlette import status
 
 from pydantic import BaseModel,Field
 from .routers import auth,posts, admin, users
+from fastapi.templating import Jinja2Templates
+
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI()
@@ -21,6 +25,15 @@ Base.metadata.create_all(bind=engine)
 app.include_router(
     auth.router
 )
+app.mount("/static",StaticFiles(directory="app/static"),name='static')
+
+templates = Jinja2Templates(directory="app/templates")
+
+
+
+@app.get("/")
+def test(request:Request):
+    return templates.TemplateResponse("home.html", {"request":request})
 
 app.include_router(
     posts.router
@@ -31,3 +44,7 @@ app.include_router(
 app.include_router(
     users.router
 )
+
+
+
+

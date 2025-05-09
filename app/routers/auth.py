@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter,Depends
+from fastapi import FastAPI, APIRouter,Depends,Request
 from ..models import Users
 from fastapi.exceptions import HTTPException 
 from pydantic import BaseModel
@@ -12,6 +12,7 @@ from jose import jwt, JWTError
 from datetime import timedelta,datetime,timezone
 from dotenv import load_dotenv
 import os
+from fastapi.templating import Jinja2Templates
 
 load_dotenv()
 
@@ -49,6 +50,20 @@ db_dependency = Annotated[
     Session,
     Depends(get_db)
 ]
+
+templates = Jinja2Templates(directory="app/templates")
+
+## Pages ##
+
+@router.get('/login-page')
+def render_login_page(request:Request):
+    return templates.TemplateResponse("login.html",{'request':request})
+
+@router.get('/register-page')
+def render_login_page(request:Request):
+    return templates.TemplateResponse("register.html",{'request':request})
+
+## endpoints ## 
 
 def authenticate_user(username:str,password:str,db):
     user = db.query(Users).filter(Users.username == username).first()
